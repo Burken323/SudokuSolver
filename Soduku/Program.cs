@@ -11,6 +11,7 @@ namespace Soduku
         static void Main(string[] args)
         {
             Console.WriteLine("Hata git. jk");
+            Console.ReadKey();
         }
     }
 }

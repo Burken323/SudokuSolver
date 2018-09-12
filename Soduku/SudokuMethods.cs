@@ -52,7 +52,7 @@ namespace Soduku
         /**
          * Returns all the valid numbers in the current 3x3 area.
          */
-        public void GetValidNumber()
+        public void GetValidNumber(int x, int y)
         {
 
         }
@@ -66,9 +66,17 @@ namespace Soduku
         }
 
         /**
+         * Solver method for easy sudoku-puzzle.
+         */
+        public void PuzzleSolverEasy()
+        {
+            //Loopa och sätt in värden som endast kan vara på den positionen.
+        }
+
+        /**
          * Solver method for the sudoku-puzzle.
          */
-         public static void PuzzleSolver(int start, char[,] puzzle, char[,] originPuzzle)
+        public static void PuzzleSolver(int start, char[,] puzzle, char[,] originPuzzle)
          {
             int colLength = puzzle.GetUpperBound(0);
             int rowLength = puzzle.GetUpperBound(1);

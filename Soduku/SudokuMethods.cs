@@ -87,7 +87,7 @@ namespace Soduku
                     }
                 }
             }
-            //set puzzle to start puzzle.
+            //set puzzle to originPuzzle.
             puzzle = originPuzzle;
             PuzzleSolver(start, originPuzzle, originPuzzle);
          }

@@ -81,7 +81,7 @@ namespace Soduku
                         puzzle[cols, rows] = (char)start;
                         PuzzleSolver(1, puzzle, originPuzzle);
                     }
-                    else if(!(start < 10))
+                    else if(start != 10)
                     {
                         PuzzleSolver(start + 1, puzzle, originPuzzle);
                     }
@@ -89,7 +89,7 @@ namespace Soduku
             }
             //set puzzle to start puzzle.
             puzzle = originPuzzle;
-            PuzzleSolver(start, puzzle, originPuzzle);
+            PuzzleSolver(start, originPuzzle, originPuzzle);
          }
 
 

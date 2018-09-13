@@ -227,20 +227,26 @@ namespace Soduku
                     //Need fix here.
                     else if(int.Parse(start) == 10)
                     {
-                        rows--;
-                        int num = int.Parse(puzzle[cols, rows].ToString());
-                        num++;
-                        if(num == 10)
+                        while (rows > 0)
                         {
-                            num = 1;
+                            rows--;
+                            if (puzzle[cols, rows].Equals(' '))
+                            {
+                                int num = int.Parse(puzzle[cols, rows].ToString());
+                                num++;
+                                if (num == 10)
+                                {
+                                    num = 1;
+                                }
+                                string temp = num.ToString();
+                                while (boxContains.Contains(temp[0]))
+                                {
+                                    num++;
+                                }
+                                string number = num.ToString();
+                                puzzle[cols, rows] = number[0];
+                            }
                         }
-                        string temp = num.ToString();
-                        while (boxContains.Contains(num))
-                        {
-                            num++;
-                        }
-                        string number = num.ToString();
-                        puzzle[cols, rows] = number[0];
                     }
                     else
                     {

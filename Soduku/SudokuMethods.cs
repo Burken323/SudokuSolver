@@ -73,7 +73,7 @@ namespace Soduku
         /**
          * Returns all the valid numbers in the current 3x3 area.
          */
-        private static List<char> GetValidNumbers(int x, int y, char[,] puzzle)
+        public List<char> GetValidNumbers(int x, int y, char[,] puzzle)
         {
             List<char> boxContains = new List<char>();
             //Ruta 0.
@@ -168,7 +168,7 @@ namespace Soduku
         /**
          * Solver method for easy sudoku-puzzle.
          */
-        public static void PuzzleSolverEasy(char[,] puzzle)
+        public void PuzzleSolverEasy(char[,] puzzle)
         {
             //Loopa och sätt in värden som endast kan vara på den positionen.
             List<char> boxContains = new List<char>();
@@ -183,6 +183,10 @@ namespace Soduku
                 {
                     for (int rows = 0; rows <= rowLength; rows++)
                     {
+                        if(CheckIfValidSquare(rows, cols, puzzle))
+                        {
+                            continue;
+                        }
                         boxContains = GetValidNumbers(rows, cols, puzzle);
                         if (!FindInRow(start[0], cols, puzzle) && !FindInCol(start[0], rows, puzzle) && puzzle[cols, rows].Equals(' ') && !boxContains.Contains(start[0]))
                         {
@@ -196,7 +200,7 @@ namespace Soduku
         /**
          * Solver method for the sudoku-puzzle.
          */
-        public static void PuzzleSolver(int startNum, char[,] puzzle, char[,] originPuzzle)
+        public void PuzzleSolver(int startNum, char[,] puzzle, char[,] originPuzzle)
         {
             string start = startNum.ToString();
             int colLength = puzzle.GetUpperBound(0);
@@ -206,7 +210,11 @@ namespace Soduku
             {
                 for(int rows = 0; rows <= rowLength; rows++)
                 {
-                    boxContains = GetValidNumber(rows, cols, puzzle);
+                    if (CheckIfValidSquare(rows, cols, puzzle))
+                    {
+                        continue;
+                    }
+                    boxContains = GetValidNumbers(rows, cols, puzzle);
                     if (!FindInRow(start[0], cols, puzzle) && !FindInCol(start[0], rows, puzzle) && puzzle[cols,rows].Equals(' ') && !boxContains.Contains(start[0]))
                     {
                         puzzle[cols, rows] = start[0];

@@ -10,8 +10,6 @@ namespace Soduku
     {
         static void Main(string[] args)
         {
-            
-            
         }
     }
 }

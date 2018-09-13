@@ -224,11 +224,31 @@ namespace Soduku
                     {
                         PuzzleSolver(startNum + 1, puzzle, originPuzzle);
                     }
+                    //Need fix here.
+                    else if(int.Parse(start) == 10)
+                    {
+                        rows--;
+                        int num = int.Parse(puzzle[cols, rows].ToString());
+                        num++;
+                        if(num == 10)
+                        {
+                            num = 1;
+                        }
+                        string temp = num.ToString();
+                        while (boxContains.Contains(num))
+                        {
+                            num++;
+                        }
+                        string number = num.ToString();
+                        puzzle[cols, rows] = number[0];
+                    }
+                    else
+                    {
+                        puzzle = originPuzzle;
+                        PuzzleSolver(startNum, originPuzzle, originPuzzle);
+                    }
                 }
             }
-            //set puzzle to originPuzzle.
-            puzzle = originPuzzle;
-            PuzzleSolver(startNum, originPuzzle, originPuzzle);
         }
 
 

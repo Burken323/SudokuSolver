@@ -10,6 +10,10 @@ namespace Soduku
     {
         static void Main(string[] args)
         {
+            SudokuMethods game = new SudokuMethods("003020600900305001001806400" +
+                                                   "008102900700000008006708200" +
+                                                   "002609500800203009005010300");
+            //game.PrintBoard();
         }
     }
 }

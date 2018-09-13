@@ -8,7 +8,39 @@ namespace Soduku
 {
     class SudokuMethods
     {
-        
+        public char[,] puzzle = new char[9,9];
+        public char[,] originPuzzle = new char[9, 9];
+
+        public SudokuMethods(string game)
+        {
+            int index = 0;
+            int colLength = puzzle.GetUpperBound(0);
+            int rowLength = puzzle.GetUpperBound(1);
+            Console.WriteLine("+-----------------------------------+");
+            for(int cols = 0; cols <= colLength; cols++)
+            {
+                Console.Write("|");
+                for(int rows = 0; rows <= rowLength; rows++)
+                {
+                    if (game[index].Equals('0'))
+                    {
+                        puzzle[cols, rows] = '-';
+                        Console.Write(" " + puzzle[cols, rows] + " ");
+                    }
+                    else
+                    {
+                        puzzle[cols, rows] = game[index];
+                        Console.Write(" " + puzzle[cols, rows] + " ");
+                    }
+                    Console.Write("|");
+                    index++;
+                }
+                Console.Write("\r\n");
+                Console.WriteLine("+-----------------------------------+");
+            }
+            originPuzzle = puzzle;
+        }
+       
         /**
          * Checks if the number exists in that row.
          */
@@ -60,7 +92,7 @@ namespace Soduku
             {
                 for (int row = startRow; row < stopRow; row++)
                 {
-                    if(!puzzle[col,row].Equals(' '))
+                    if(!puzzle[col,row].Equals('-'))
                     {
                         boxContains.Add(puzzle[col, row]);
                         
@@ -82,7 +114,7 @@ namespace Soduku
                 boxContains = FindNumbers(0, 3, 0, 3, puzzle);
             }
             //Ruta 1,0.
-            else if (x < 3 && (y > 2 %% y < 5))
+            else if (x < 3 && (y > 2 && y < 5))
             {
                 boxContains = FindNumbers(0, 3, 3, 5, puzzle);
             }
@@ -154,13 +186,15 @@ namespace Soduku
         {
             List<char> contents = new List<char>();
             contents = GetValidNumbers(x, y, puzzle);
-            for (int i = 1; i < 10; i++)
+            int numberCompare = 1;
+            for (int i = 0; i < 9; i++)
             {
-                string temp = i.ToString();
+                string temp = numberCompare.ToString();
                 if (!contents.Contains(temp[0]))
                 {
                     return false;
                 }
+                numberCompare++;
             }
             return true;
         }
@@ -188,7 +222,7 @@ namespace Soduku
                             continue;
                         }
                         boxContains = GetValidNumbers(rows, cols, puzzle);
-                        if (!FindInRow(start[0], cols, puzzle) && !FindInCol(start[0], rows, puzzle) && puzzle[cols, rows].Equals(' ') && !boxContains.Contains(start[0]))
+                        if (!FindInRow(start[0], cols, puzzle) && !FindInCol(start[0], rows, puzzle) && puzzle[cols, rows].Equals('-') && !boxContains.Contains(start[0]))
                         {
                             puzzle[cols, rows] = start[0];
                         }
@@ -210,10 +244,6 @@ namespace Soduku
             {
                 for(int rows = 0; rows <= rowLength; rows++)
                 {
-                    if (CheckIfValidSquare(rows, cols, puzzle))
-                    {
-                        continue;
-                    }
                     boxContains = GetValidNumbers(rows, cols, puzzle);
                     if (!FindInRow(start[0], cols, puzzle) && !FindInCol(start[0], rows, puzzle) && puzzle[cols,rows].Equals(' ') && !boxContains.Contains(start[0]))
                     {
@@ -224,7 +254,7 @@ namespace Soduku
                     {
                         PuzzleSolver(startNum + 1, puzzle, originPuzzle);
                     }
-                    //Need fix here.
+                    //Need fix here. Flagging need to be added.
                     else if(int.Parse(start) == 10)
                     {
                         while (rows > 0)

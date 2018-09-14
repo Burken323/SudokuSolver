@@ -40,16 +40,32 @@ namespace Soduku
             }
             originPuzzle = puzzle;
         }
+
+        public void PrintPuzzle()
+        {
+            Console.WriteLine("+---+---+---+---+---+---+---+---+---+");
+            for (int cols = 0; cols <= puzzle.GetUpperBound(0); cols++)
+            {
+                Console.Write("|");
+                for(int rows = 0; rows <= puzzle.GetUpperBound(1); rows++)
+                {
+                    Console.Write(" " + puzzle[cols, rows] + " ");
+                    Console.Write("|");
+                }
+                Console.Write("\r\n");
+                Console.WriteLine("+---+---+---+---+---+---+---+---+---+");
+            }
+        }
        
         /**
-         * Checks if the number exists in that row.
+         * Checks if the number exists in that column.
          */
-        public static bool FindInRow(char num, int col, char[,] puzzle)
+        public bool FindInCol(char num, int col)
         {
-            int length = puzzle.GetUpperBound(1);
+            int length = puzzle.GetUpperBound(0);
             for (int row = 0; row <= length; row++)
             {
-                if (num == puzzle[col, row])
+                if (num == puzzle[row, col])
                 {
                     return true;
                 }
@@ -58,14 +74,14 @@ namespace Soduku
         }
 
         /**
-         * Checks if the number exists in that column.
+         * Checks if the number exists in that row.
          */
-        public static bool FindInCol(char num, int row, char[,] puzzle)
+        public bool FindInRow(char num, int row)
         {
-            int length = puzzle.GetUpperBound(0);
+            int length = puzzle.GetUpperBound(1);
             for (int col = 0; col <= length; col++)
             {
-                if (num == puzzle[col, row])
+                if (num == puzzle[row, col])
                 {
                     return true;
                 }
@@ -85,16 +101,16 @@ namespace Soduku
         /**
          * Returns an array with the values in the puzzle's box.
          */
-        private static List<char> FindNumbers(int startRow, int stopRow, int startCol, int stopCol, char[,] puzzle)
+        private List<char> FindNumbers(int startRow, int stopRow, int startCol, int stopCol)
         {
             List<char> boxContains = new List<char>();
-            for (int col = startCol; col < stopCol; col++)
+            for (int row = startRow; row < stopRow; row++)
             {
-                for (int row = startRow; row < stopRow; row++)
+                for (int col = startCol; col < stopCol; col++)
                 {
-                    if(!puzzle[col,row].Equals('-'))
+                    if(!puzzle[row,col].Equals('-'))
                     {
-                        boxContains.Add(puzzle[col, row]);
+                        boxContains.Add(puzzle[row, col]);
                         
                     }
                 }
@@ -105,71 +121,136 @@ namespace Soduku
         /**
          * Returns all the valid numbers in the current 3x3 area.
          */
-        public List<char> GetValidNumbers(int x, int y, char[,] puzzle)
+        public List<char> GetValidNumbers(int y, int x)
         {
             List<char> boxContains = new List<char>();
             //Ruta 0.
-            if (x < 3 && y < 3)
+            if (y < 3 && x < 3)
             {
-                boxContains = FindNumbers(0, 3, 0, 3, puzzle);
-            }
-            //Ruta 1,0.
-            else if (x < 3 && (y > 2 && y < 5))
-            {
-                boxContains = FindNumbers(0, 3, 3, 5, puzzle);
-            }
-            //Ruta 2,0.
-            else if(x < 3 && (y > 5 && y < 9))
-            {
-                boxContains = FindNumbers(0, 3, 5, 9, puzzle);
+                boxContains = FindNumbers(0, 3, 0, 3);
             }
             //Ruta 0,1.
-            else if ((x > 2 && x < 5) && y < 3)
+            else if (y < 3 && (x > 2 && x < 6))
             {
-                boxContains = FindNumbers(3, 5, 0, 3, puzzle);
-            }
-            //MittenRutan 1,1.
-            else if ((x > 2 && x < 5) && (y > 2 && y < 5))
-            {
-                boxContains = FindNumbers(3, 5, 3, 5, puzzle);
-            }
-            //Ruta 2,1.
-            else if ((x > 2 && x < 5) && (y > 5 && y < 9))
-            {
-                boxContains = FindNumbers(3, 5, 5, 9, puzzle);
+                boxContains = FindNumbers(0, 3, 3, 6);
             }
             //Ruta 0,2.
-            else if((x > 5 && x < 9) && y < 3)
+            else if(y < 3 && (x > 5 && x < 9))
             {
-                boxContains = FindNumbers(5, 9, 0, 3, puzzle);
+                boxContains = FindNumbers(0, 3, 6, 9);
+            }
+            //Ruta 1,0.
+            else if ((y > 2 && y < 6) && x < 3)
+            {
+                boxContains = FindNumbers(3, 6, 0, 3);
+            }
+            //MittenRutan 1,1.
+            else if ((y > 2 && y < 6) && (x > 2 && x < 6))
+            {
+                boxContains = FindNumbers(3, 6, 3, 6);
+            }
+            //Ruta 2,1.
+            else if ((y > 2 && y < 6) && (x > 5 && x < 9))
+            {
+                boxContains = FindNumbers(3, 6, 6, 9);
+            }
+            //Ruta 0,2.
+            else if((y > 5 && y < 9) && x < 3)
+            {
+                boxContains = FindNumbers(6, 9, 0, 3);
             }
             //Ruta 1,2.
-            else if ((x > 5 && x < 9) && (y > 2 && y < 5))
+            else if ((y > 5 && y < 9) && (x > 2 && x < 6))
             {
-                boxContains = FindNumbers(5, 9, 3, 5, puzzle);
+                boxContains = FindNumbers(6, 9, 3, 6);
             }
             //Ruta 2,2.
             else
             {
-                boxContains = FindNumbers(5, 9, 5, 9, puzzle);
+                boxContains = FindNumbers(6, 9, 6, 9);
             }
             return boxContains;
+        }
+
+        public List<char> CheckForInputNumbers(int y, int x)
+        {
+            List<char> inputNumbers = new List<char>();
+            for(int i = 1; i < 10; i++)
+            {
+                string num = i.ToString();
+                if ((x - 1) < 0 || (x + 1) > 8 || (y - 1) < 0 || (y + 1) > 8)
+                {
+                    /*
+                    if ((x - 1) < 0 && y > 0 && y < 8)
+                    {
+                        //Inte göra col
+                        if(FindInRow(num[0], y + 1) && FindInRow(num[0], y - 1) && FindInCol(num[0], x + 1) && !FindInRow(num[0], y) && !FindInCol(num[0], x))
+                        {
+                            inputNumbers.Clear();
+                            inputNumbers.Add(num[0]);
+                            return inputNumbers;
+                        }
+                    }
+                    else if ((x + 1) > 8 && y < 8 && y > 0)
+                    {
+                        //Inte göra col
+                        if (FindInRow(num[0], y + 1) && FindInRow(num[0], y - 1) && FindInCol(num[0], x - 1) && !FindInRow(num[0], y) && !FindInCol(num[0], x))
+                        {
+                            inputNumbers.Clear();
+                            inputNumbers.Add(num[0]);
+                            return inputNumbers;
+                        }
+                    }
+                    else if ((y - 1) < 0 && x > 0 && x < 8)
+                    {
+                        //Inte göra row
+                        if (FindInRow(num[0], y + 1) && FindInCol(num[0], x - 1) && FindInCol(num[0], x + 1) && !FindInRow(num[0], y) && !FindInCol(num[0], x))
+                        {
+                            inputNumbers.Clear();
+                            inputNumbers.Add(num[0]);
+                            return inputNumbers;
+                        }
+                    }
+                    else if ((y + 1) > 8 && x > 0 && x < 8)
+                    {
+                        //Inte göra row
+                        if (FindInRow(num[0], y - 1) && FindInCol(num[0], x + 1) && FindInCol(num[0], x - 1) && !FindInRow(num[0], y) && !FindInCol(num[0], x))
+                        {
+                            inputNumbers.Clear();
+                            inputNumbers.Add(num[0]);
+                            return inputNumbers;
+                        }
+                    }*/
+                }
+                else if (FindInRow(num[0], y + 1) && FindInCol(num[0], x + 1) && FindInRow(num[0], y - 1) && FindInCol(num[0], x - 1) && !FindInRow(num[0], y) && !FindInCol(num[0], x))
+                {
+                    inputNumbers.Clear();
+                    inputNumbers.Add(num[0]);
+                    return inputNumbers;
+                }
+                else if (!FindInRow(num[0], y) && !FindInCol(num[0], x))
+                {
+                    inputNumbers.Add(num[0]);     
+                }
+            }
+            return inputNumbers;
         }
 
         /**
          * Returns true if puzzle is complete.
          */
-        public bool CheckIfComplete(char[,] puzzle)
+        public bool CheckIfComplete()
         {
             int colLength = puzzle.GetUpperBound(0);
             int rowLength = puzzle.GetUpperBound(1);
             int rowTotal = 0;
-            for (int cols = 0; cols <= colLength; cols++)
+            for (int rows = 0; rows <= rowLength; rows++)
             {
                 rowTotal = 0;
-                for (int rows = 0; rows <= rowLength; rows++)
+                for (int cols = 0; cols <= colLength; cols++)
                 {
-                    rowTotal += int.Parse(puzzle[cols, rows].ToString());
+                    
+                    rowTotal += (int)Char.GetNumericValue(puzzle[rows,cols]);
                 }
                 if(rowTotal != 45)
                 {
@@ -182,10 +263,10 @@ namespace Soduku
         /**
          * Returns true/false depinding on the squares status.
          */
-        public bool CheckIfValidSquare(int x, int y, char[,] puzzle)
+        public bool CheckIfValidSquare(int y, int x)
         {
             List<char> contents = new List<char>();
-            contents = GetValidNumbers(x, y, puzzle);
+            contents = GetValidNumbers(y, x);
             int numberCompare = 1;
             for (int i = 0; i < 9; i++)
             {
@@ -202,30 +283,52 @@ namespace Soduku
         /**
          * Solver method for easy sudoku-puzzle.
          */
-        public void PuzzleSolverEasy(char[,] puzzle)
+        public void PuzzleSolverEasy()
         {
             //Loopa och sätt in värden som endast kan vara på den positionen.
             List<char> boxContains = new List<char>();
-            int colLength = puzzle.GetUpperBound(0);
-            int rowLength = puzzle.GetUpperBound(1);
+            List<char> inputNumbers = new List<char>();
+            int colLength = puzzle.GetUpperBound(1);
+            int rowLength = puzzle.GetUpperBound(0);
             int startNum = 1;
             string start = startNum.ToString();
+            
             bool puzzleNotSolved = true;
             while (puzzleNotSolved)
             {
-                for(int cols = 0; cols <= colLength; cols++)
+
+                if (CheckIfComplete())
                 {
-                    for (int rows = 0; rows <= rowLength; rows++)
+                    PrintPuzzle();
+                    break;
+                }
+                
+                for(int rows = 0; rows <= rowLength; rows++)
+                {
+                    for (int cols = 0; cols <= colLength; cols++)
                     {
-                        if(CheckIfValidSquare(rows, cols, puzzle))
+                        /*
+                        if(CheckIfValidSquare(rows, cols))
                         {
                             continue;
-                        }
-                        boxContains = GetValidNumbers(rows, cols, puzzle);
-                        if (!FindInRow(start[0], cols, puzzle) && !FindInCol(start[0], rows, puzzle) && puzzle[cols, rows].Equals('-') && !boxContains.Contains(start[0]))
+                        }*/
+                        inputNumbers = CheckForInputNumbers(rows, cols);
+                        boxContains = GetValidNumbers(rows, cols);
+                        
+                        
+                        if (puzzle[rows, cols].Equals('-') && (inputNumbers.Count == 1))
                         {
-                            puzzle[cols, rows] = start[0];
+                            
+                            if (!boxContains.Contains(inputNumbers.ElementAt(0)))
+                            {
+                                puzzle[rows, cols] = inputNumbers.ElementAt(0);
+                                PrintPuzzle();
+                                
+                            }
+                            
                         }
+                        boxContains.Clear(); 
+                        inputNumbers.Clear(); 
                     }
                 }
             }
@@ -244,8 +347,8 @@ namespace Soduku
             {
                 for(int rows = 0; rows <= rowLength; rows++)
                 {
-                    boxContains = GetValidNumbers(rows, cols, puzzle);
-                    if (!FindInRow(start[0], cols, puzzle) && !FindInCol(start[0], rows, puzzle) && puzzle[cols,rows].Equals(' ') && !boxContains.Contains(start[0]))
+                    boxContains = GetValidNumbers(rows, cols);
+                    if (!FindInRow(start[0], cols) && !FindInCol(start[0], rows) && puzzle[cols,rows].Equals(' ') && !boxContains.Contains(start[0]))
                     {
                         puzzle[cols, rows] = start[0];
                         PuzzleSolver(1, puzzle, originPuzzle);

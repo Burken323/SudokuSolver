@@ -14,7 +14,8 @@ namespace Soduku
                                                    "008102900700000008006708200" +
                                                    "002609500800203009005010300");
             //game.PrintPuzzle();
-            game.PuzzleSolverEasy();
+            game.PuzzleSolver(1, game.puzzle, game.originPuzzle);
+            //game.PuzzleSolver(1, game.puzzle, game.originPuzzle);
             game.PrintPuzzle();
             Console.ReadKey();
             //game.PrintBoard();

@@ -18,7 +18,7 @@ namespace Soduku
             //game.PrintPuzzle();
             //game.PuzzleSolverEasy();
             game.Solve();
-            
+            //game.PrintPuzzle(game.puzzle);
             game.PrintPuzzle(game.puzzleComplete);
             
             

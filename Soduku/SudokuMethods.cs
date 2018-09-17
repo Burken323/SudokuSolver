@@ -250,23 +250,7 @@ namespace Soduku
                 Console.ReadKey();
 
             }
-            /*
-            for (int rows = 0; rows <= rowLength; rows++)
-            {
-                for (int cols = 0; cols <= colLength; cols++)
-                {
-                    boxContains = GetValidNumbers(rows, cols);
-                    inputNumbers = CheckForInputNumbers(rows, cols);
-
-                    if (puzzle[rows, cols].Equals('-') && (inputNumbers.Count == 1))
-                    {
-                        puzzle[rows, cols] = inputNumbers.ElementAt(0);
-                        PrintPuzzle();
-                        
-                    }
-                }
-            }
-            */
+            
             boxContains.Clear();
             inputNumbers.Clear();
             //Loopar 1-9 och testar att sätta in ett value.
@@ -283,7 +267,7 @@ namespace Soduku
                     boxContains.Clear();
                     inputNumbers.Clear();
                     //Kontrollera om inputen fungerar.
-                    if (CheckIfInputWorks())
+                    if (Solve())
                     {
                         //Om hela fungerar så kopiera lösningen.
                         if (testSolution == 0)
@@ -309,7 +293,7 @@ namespace Soduku
             return false;
         }
 
-        public bool CheckIfInputWorks()
+        public bool Solve()
         {
             for (int rows = 0; rows <= puzzle.GetUpperBound(0); rows++)
             {
@@ -324,48 +308,6 @@ namespace Soduku
             }
             return true;
         }
-        
-        public bool CheckForSolution()
-        {
-            for(int rows = 0; rows <= puzzle.GetUpperBound(0); rows++)
-            {
-                for(int cols = 0; cols <= puzzle.GetUpperBound(1); cols++)
-                {
-                    //Kontrollerar så positionen innehåller tal.
-                    if(!puzzle[rows, cols].Equals('-'))
-                    {
-                        List<char> inputNumbers = new List<char>();
-                        
-                        inputNumbers = CheckForInputNumbers(rows, cols);
-                        
-                        //Kontrollerar Rows, cols, samt box för positionen.
-                        if (!(inputNumbers.Count != 1))
-                        {
-                            return false;
-                        }
-                    }
-                }
-            }
-            return true;
-        }
-
-        public void Solve()
-        {
-            //Kontrollerar så det finns en lösning för pusslet.
-            CheckIfInputWorks();
-            /*if (CheckForSolution())
-            {
-                //Startar rekursionen för att lösa pusslet.
-                CheckIfInputWorks();
-                //return testSolution > 0;
-            }
-            else
-            {
-                Console.WriteLine("Pusslet saknar lösning.");
-                //return false;
-            }*/
-        }
-        
     }
 }
 

@@ -61,12 +61,12 @@ namespace Soduku
         /**
          * Checks if the number exists in that column.
          */
-        public bool FindInCol(char num, int col)
+        public bool FindInCol(char num, int col, int y)
         {
             int length = puzzle.GetUpperBound(0);
             for (int row = 0; row <= length; row++)
             {
-                if (num == puzzle[row, col])
+                if (num == puzzle[row, col] && (y != row))
                 {
                     return true;
                 }
@@ -77,12 +77,12 @@ namespace Soduku
         /**
          * Checks if the number exists in that row.
          */
-        public bool FindInRow(char num, int row)
+        public bool FindInRow(char num, int row, int x)
         {
             int length = puzzle.GetUpperBound(1);
             for (int col = 0; col <= length; col++)
             {
-                if (num == puzzle[row, col])
+                if (num == puzzle[row, col] && (x != col))
                 {
                     return true;
                 }
@@ -138,7 +138,7 @@ namespace Soduku
             for (int i = 1; i < 10; i++)
             {
                 string num = i.ToString();
-                if (!FindInRow(num[0], y) && !FindInCol(num[0], x) && !boxContains.Contains(num[0]))
+                if (!FindInRow(num[0], y, x) && !FindInCol(num[0], x, y) && !boxContains.Contains(num[0]))
                 {
                     inputNumbers.Add(num[0]);
                 }
@@ -293,8 +293,39 @@ namespace Soduku
             return false;
         }
 
+        /**
+         * Checks if the puzzle is valid or not.
+         */
+        public bool ValidPuzzle()
+        {
+            for(int rows = 0; rows <= puzzle.GetUpperBound(0); rows++)
+            {
+                for(int cols = 0; cols <= puzzle.GetUpperBound(1); cols++)
+                {
+                    if(!puzzle[rows,cols].Equals('-') && (FindInRow(puzzle[rows,cols], rows, cols) || FindInCol(puzzle[rows,cols], cols, rows)))
+                    {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+
+        public void PuzzleControl()
+        {
+            if (!ValidPuzzle())
+            {
+                Console.WriteLine("Felaktigt pussel!");
+                Console.ReadKey();
+            }
+        }
+
+        /**
+         * Solves hard sudoku puzzles using mutual recursion searching for a solution using depth-first.
+         */
         public bool Solve()
         {
+            PuzzleControl();
             for (int rows = 0; rows <= puzzle.GetUpperBound(0); rows++)
             {
                 for(int cols = 0; cols <= puzzle.GetUpperBound(1); cols++)

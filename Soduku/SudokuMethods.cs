@@ -8,9 +8,9 @@ namespace Soduku
 {
     class SudokuMethods
     {
-        public char[,] puzzle = new char[9,9];
+        private char[,] puzzle = new char[9,9];
         public char[,] puzzleComplete = new char[9, 9];
-        public int testSolution = 0;
+        private int testSolution = 0;
         
         /**
          * Reads the given string and turns it into a sudokuboard.
@@ -47,7 +47,7 @@ namespace Soduku
         /**
          * Prints our puzzle.
          */
-        public void PrintPuzzle(char[,] puzzle)
+        private void PrintPuzzle(char[,] puzzle)
         {
             Console.WriteLine("+---+---+---+---+---+---+---+---+---+");
             for (int rows = 0; rows <= puzzle.GetUpperBound(0); rows++)
@@ -66,7 +66,7 @@ namespace Soduku
         /**
          * Checks if the number exists in that column.
          */
-        public bool FindInCol(char num, int col, int y)
+        private bool FindInCol(char num, int col, int y)
         {
             int length = puzzle.GetUpperBound(0);
             for (int row = 0; row <= length; row++)
@@ -82,7 +82,7 @@ namespace Soduku
         /**
          * Checks if the number exists in that row.
          */
-        public bool FindInRow(char num, int row, int x)
+        private bool FindInRow(char num, int row, int x)
         {
             int length = puzzle.GetUpperBound(1);
             for (int col = 0; col <= length; col++)
@@ -118,7 +118,7 @@ namespace Soduku
         /**
          * Returns all the valid numbers in the current 3x3 area.
          */
-        public List<char> GetValidNumbers(int y, int x)
+        private List<char> GetValidNumbers(int y, int x)
         {
             List<char> boxContains = new List<char>();
             int boxLength = 3;
@@ -134,7 +134,7 @@ namespace Soduku
         /**
          * Gets the valid input numbers for the position.
          */
-        public List<char> CheckForInputNumbers(int y, int x)
+        private List<char> CheckForInputNumbers(int y, int x)
         {
             List<char> inputNumbers = new List<char>();
             List<char> boxContains = new List<char>();
@@ -154,7 +154,7 @@ namespace Soduku
         /**
          * Returns true if puzzle is complete.
          */
-        public bool CheckIfComplete()
+        private bool CheckIfComplete()
         {
             int colLength = puzzle.GetUpperBound(0);
             int rowLength = puzzle.GetUpperBound(1);
@@ -224,7 +224,7 @@ namespace Soduku
         /**
          * Solver method for the sudoku-puzzle.
          */
-        public bool PuzzleSolver(int y, int x, char[,] puzzle)
+        private bool PuzzleSolver(int y, int x, char[,] puzzle)
         {
             List<char> boxContains = new List<char>();
             List<char> inputNumbers = new List<char>();
@@ -280,7 +280,7 @@ namespace Soduku
         /**
          * Checks if the puzzle is valid or not.
          */
-        public bool ValidPuzzle()
+        private bool ValidPuzzle()
         {
             for(int rows = 0; rows <= puzzle.GetUpperBound(0); rows++)
             {
@@ -298,7 +298,7 @@ namespace Soduku
         /**
          * Stops the solver if the puzzle is invalid.
          */
-        public void PuzzleControl()
+        private void PuzzleControl()
         {
             if (!ValidPuzzle())
             {
@@ -310,7 +310,7 @@ namespace Soduku
         /**
          * Solves hard sudoku puzzles using mutual recursion searching for a solution using depth-first.
          */
-        public bool RecursionSolve()
+        private bool RecursionSolve()
         {
             PuzzleControl();
             for (int rows = 0; rows <= puzzle.GetUpperBound(0); rows++)

@@ -228,11 +228,7 @@ namespace Soduku
         {
             List<char> boxContains = new List<char>();
             List<char> inputNumbers = new List<char>();
-            if (CheckIfComplete())
-            {
-                Console.WriteLine("Klart!");
-                Console.ReadKey();
-            }
+            
             //Loopar 1-9 och testar att sätta in ett value.
             for (int testValue = 1; testValue < 10; testValue++)
             {
@@ -247,13 +243,15 @@ namespace Soduku
                     if (RecursionSolve())
                     {
                         //Om hela fungerar så kopiera lösningen.
-                        if (testSolution == 0)
+                        if (CheckIfComplete())
                         {
+                            Console.WriteLine("Klart!");
                             CopySolution(puzzle);
                             Console.WriteLine("Hittade en lösning!");
-                            testSolution++;
-                            return true;
+                            Console.ReadKey();
+                            Environment.Exit(0);
                         }
+                        return true;
                     }
                 }
             }

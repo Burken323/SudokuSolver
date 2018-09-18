@@ -11,46 +11,51 @@ namespace Soduku
         public char[,] puzzle = new char[9,9];
         public char[,] puzzleComplete = new char[9, 9];
         public int testSolution = 0;
-
+        
+        /**
+         * Reads the given string and turns it into a sudokuboard.
+         */
         public SudokuMethods(string game)
         {
             int index = 0;
             int colLength = puzzle.GetUpperBound(0);
             int rowLength = puzzle.GetUpperBound(1);
-            Console.WriteLine("+-----------------------------------+");
-            for(int cols = 0; cols <= colLength; cols++)
+            Console.WriteLine("+---+---+---+---+---+---+---+---+---+");
+            for (int rows = 0; rows <= rowLength; rows++)
             {
                 Console.Write("|");
-                for(int rows = 0; rows <= rowLength; rows++)
+                for(int cols = 0; cols <= colLength; cols++)
                 {
                     if (game[index].Equals('0'))
                     {
-                        puzzle[cols, rows] = '-';
-                        Console.Write(" " + puzzle[cols, rows] + " ");
+                        puzzle[rows, cols] = '-';
+                        Console.Write(" " + puzzle[rows, cols] + " ");
                     }
                     else
                     {
-                        puzzle[cols, rows] = game[index];
-                        Console.Write(" " + puzzle[cols, rows] + " ");
+                        puzzle[rows, cols] = game[index];
+                        Console.Write(" " + puzzle[rows, cols] + " ");
                     }
                     Console.Write("|");
                     index++;
                 }
                 Console.Write("\r\n");
-                Console.WriteLine("+-----------------------------------+");
+                Console.WriteLine("+---+---+---+---+---+---+---+---+---+");
             }
-            //originPuzzle = puzzle;
         }
 
+        /**
+         * Prints our puzzle.
+         */
         public void PrintPuzzle(char[,] puzzle)
         {
             Console.WriteLine("+---+---+---+---+---+---+---+---+---+");
-            for (int cols = 0; cols <= puzzle.GetUpperBound(0); cols++)
+            for (int rows = 0; rows <= puzzle.GetUpperBound(0); rows++)
             {
                 Console.Write("|");
-                for(int rows = 0; rows <= puzzle.GetUpperBound(1); rows++)
+                for(int cols = 0; cols <= puzzle.GetUpperBound(1); cols++)
                 {
-                    Console.Write(" " + puzzle[cols, rows] + " ");
+                    Console.Write(" " + puzzle[rows, cols] + " ");
                     Console.Write("|");
                 }
                 Console.Write("\r\n");
@@ -168,68 +173,50 @@ namespace Soduku
             }
             return true;
         }
-
-        /**
-         * Returns true/false depinding on the squares status.
-         */
-        public bool CheckIfValidSquare(int y, int x)
-        {
-            List<char> contents = new List<char>();
-            contents = GetValidNumbers(y, x);
-            int numberCompare = 1;
-            for (int i = 0; i < 9; i++)
-            {
-                string temp = numberCompare.ToString();
-                if (!contents.Contains(temp[0]))
-                {
-                    return false;
-                }
-                numberCompare++;
-            }
-            return true;
-        }
-
+        
         /**
          * Solver method for easy sudoku-puzzle.
          */
-        public void PuzzleSolverEasy()
+        public void Solve()
         {
             //Loopa och sätt in värden som endast kan vara på den positionen.
             List<char> boxContains = new List<char>();
             List<char> inputNumbers = new List<char>();
-            int colLength = puzzle.GetUpperBound(1);
-            int rowLength = puzzle.GetUpperBound(0);
-            
-            
             bool puzzleNotSolved = true;
             while (puzzleNotSolved)
             {
-
+                puzzleNotSolved = false;
                 if (CheckIfComplete())
                 {
-                    
+                    CopySolution(puzzle);
                     Console.WriteLine("Klart!");
                     break;
                 }
-                
-                for(int rows = 0; rows <= rowLength; rows++)
+                CheckIfAValueCanBeAssigned(ref boxContains, ref inputNumbers, ref puzzleNotSolved);
+            }
+            RecursionSolve();
+        }
+
+        /**
+         * Sets number if position is empty and there's only one possible number that can be assigned.
+         */
+        private void CheckIfAValueCanBeAssigned(ref List<char> boxContains, ref List<char> inputNumbers, ref bool puzzleNotSolved)
+        {
+            for (int rows = 0; rows <= puzzle.GetUpperBound(0); rows++)
+            {
+                for (int cols = 0; cols <= puzzle.GetUpperBound(1); cols++)
                 {
-                    for (int cols = 0; cols <= colLength; cols++)
+                    inputNumbers = CheckForInputNumbers(rows, cols);
+                    boxContains = GetValidNumbers(rows, cols);
+
+                    if (puzzle[rows, cols].Equals('-') && (inputNumbers.Count == 1))
                     {
-                        
-                        inputNumbers = CheckForInputNumbers(rows, cols);
-                        boxContains = GetValidNumbers(rows, cols);
-                        
-                        if (puzzle[rows, cols].Equals('-') && (inputNumbers.Count == 1))
-                        {
-                            puzzle[rows, cols] = inputNumbers.ElementAt(0);
-                            Console.WriteLine();
-                            PrintPuzzle(puzzle);
-                            Console.Clear();
-                        }
-                        boxContains.Clear(); 
-                        inputNumbers.Clear(); 
+                        puzzle[rows, cols] = inputNumbers.ElementAt(0);
+                        //PrintPuzzle(puzzle);
+                        puzzleNotSolved = true;
                     }
+                    boxContains.Clear();
+                    inputNumbers.Clear();
                 }
             }
         }
@@ -239,49 +226,31 @@ namespace Soduku
          */
         public bool PuzzleSolver(int y, int x, char[,] puzzle)
         {
-            
-            int colLength = puzzle.GetUpperBound(0);
-            int rowLength = puzzle.GetUpperBound(1);
             List<char> boxContains = new List<char>();
             List<char> inputNumbers = new List<char>();
             if (CheckIfComplete())
             {
                 Console.WriteLine("Klart!");
                 Console.ReadKey();
-
             }
-            
-            boxContains.Clear();
-            inputNumbers.Clear();
             //Loopar 1-9 och testar att sätta in ett value.
-            for(int testValue = 1; testValue < 10; testValue++)
+            for (int testValue = 1; testValue < 10; testValue++)
             {
                 boxContains = GetValidNumbers(y, x);
                 inputNumbers = CheckForInputNumbers(y, x);
                 string tempVal = testValue.ToString();
                 //Om testvärdet är ett av siffrorna som får läggas till.
-                if(inputNumbers.Contains(tempVal[0]))
+                if (inputNumbers.Contains(tempVal[0]))
                 {
                     puzzle[y, x] = tempVal[0];
-                    //PrintPuzzle(puzzle);
-                    boxContains.Clear();
-                    inputNumbers.Clear();
                     //Kontrollera om inputen fungerar.
-                    if (Solve())
+                    if (RecursionSolve())
                     {
                         //Om hela fungerar så kopiera lösningen.
                         if (testSolution == 0)
                         {
-                            for(int row = 0; row <= puzzle.GetUpperBound(0); row++)
-                            {
-                                for(int col = 0; col <= puzzle.GetUpperBound(1); col++)
-                                {
-                                    puzzleComplete[row, col] = puzzle[row, col];
-                                    
-                                }
-                            }
+                            CopySolution(puzzle);
                             Console.WriteLine("Hittade en lösning!");
-                            PrintPuzzle(puzzle);
                             testSolution++;
                             return true;
                         }
@@ -291,6 +260,21 @@ namespace Soduku
             //Om lösningen inte fungerar så backa ur och sätt pos till tom.
             puzzle[y, x] = '-';
             return false;
+        }
+
+        /**
+         * Copies the result from the puzzleboard.
+         */
+        private void CopySolution(char[,] puzzle)
+        {
+            for (int row = 0; row <= puzzle.GetUpperBound(0); row++)
+            {
+                for (int col = 0; col <= puzzle.GetUpperBound(1); col++)
+                {
+                    puzzleComplete[row, col] = puzzle[row, col];
+                }
+            }
+            PrintPuzzle(puzzleComplete);
         }
 
         /**
@@ -311,6 +295,9 @@ namespace Soduku
             return true;
         }
 
+        /**
+         * Stops the solver if the puzzle is invalid.
+         */
         public void PuzzleControl()
         {
             if (!ValidPuzzle())
@@ -323,7 +310,7 @@ namespace Soduku
         /**
          * Solves hard sudoku puzzles using mutual recursion searching for a solution using depth-first.
          */
-        public bool Solve()
+        public bool RecursionSolve()
         {
             PuzzleControl();
             for (int rows = 0; rows <= puzzle.GetUpperBound(0); rows++)

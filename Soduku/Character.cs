@@ -6,27 +6,30 @@ using System.Threading.Tasks;
 
 namespace Soduku
 {
-    class Character
+    class Character : Room
     {
         //Det karaktären har på sig;
-        public List<string> inventory;
+        public Dictionary<string, string> inventory = new Dictionary<string, string>();
         public string direction;
+        
 
-        public string foundObject { get { return foundObject; } set { foundObject = value; } } 
-
-        public void get()
+        public void get(string item)
         {
             //Plocka upp objekt och lägg till inventory.
+            inventory.Add(item,item);
         }
 
-        public void drop()
+        public void drop(string item)
         {
             //Släpp objektet i rummet. Lägg tillbaks i rummet.
+            inventory.Remove(item);
+            AddItem(item, direction);
         }
 
-        public void interact()
+        public string interact(string key)
         {
             //Hur spelaren ska interacta med objektet.
+            return descriptions[key];
         }
     }
 }

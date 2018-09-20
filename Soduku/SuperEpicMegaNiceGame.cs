@@ -8,6 +8,8 @@ namespace Soduku
 {
     class SuperEpicMegaNiceGame
     {
+        private TextAdventure tA;
+        
         public void startGame()
         {
             TextAdventure tA = new TextAdventure();
